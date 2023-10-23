@@ -20,7 +20,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.irudaru.depcalculator.R
+import com.irudaru.depcalculator.ui.navigation.NavigationDestination
 import com.irudaru.depcalculator.ui.theme.DepCalculatorTheme
+
+/**
+ * Destination for [DepositItemScreen]
+ */
+object DepositItemDestination: NavigationDestination {
+    override val route = "deposit_item"
+    override val titleRes = R.string.app_name
+}
 
 @Composable
 fun DepositItemScreen() {

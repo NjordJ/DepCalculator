@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">DepCalculator</string>
+
+    <!--Deposit List Screen-->
+    <string name="fab_add_deposit_item">Add deposit item</string>
 </resources>
