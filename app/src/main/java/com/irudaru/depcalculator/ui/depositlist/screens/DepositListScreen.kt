@@ -47,16 +47,26 @@ private fun DepositCard(index: Int, modifier: Modifier = Modifier) {
 @Composable
 private fun DepositCardContent(index: Int, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
-        Row(modifier = Modifier.padding(vertical = 4.dp)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+        ) {
             Text(
-                text = "Deposit $index"
+                text = "Deposit $index",
+                modifier = Modifier
+                    .weight(1f)
             )
             Text(
                 text = "5%",
                 modifier = Modifier.wrapContentWidth(Alignment.End)
             )
         }
-        Row(modifier = Modifier.padding(vertical = 4.dp)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+        ) {
             Text(text = "10000$")
         }
     }
