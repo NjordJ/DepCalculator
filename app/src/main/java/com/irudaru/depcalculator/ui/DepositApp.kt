@@ -11,12 +11,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarScrollBehavior
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.irudaru.depcalculator.ui.depositlist.screens.DepositListScreen
+import com.irudaru.depcalculator.R
 import com.irudaru.depcalculator.ui.navigation.DepositAppNavHost
-import com.irudaru.depcalculator.ui.theme.DepCalculatorTheme
 
 /**
  * Top level composable that shows screens for rest of the app
@@ -49,8 +48,7 @@ fun DepositAppTopAppBar(
                 IconButton(onClick = navigateUp) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
-                        // TODO: Add content description for app bar back button
-                        contentDescription = ""
+                        contentDescription = stringResource(id = R.string.backButton_appBar)
                     )
                 }
             }

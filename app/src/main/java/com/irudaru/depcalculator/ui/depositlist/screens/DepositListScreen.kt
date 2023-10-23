@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
@@ -27,6 +25,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.irudaru.depcalculator.R
+import com.irudaru.depcalculator.data.deposit.Deposit
+import com.irudaru.depcalculator.data.deposit.DepositListDataSample
 import com.irudaru.depcalculator.ui.DepositAppTopAppBar
 import com.irudaru.depcalculator.ui.navigation.NavigationDestination
 import com.irudaru.depcalculator.ui.theme.DepCalculatorTheme
@@ -36,11 +36,11 @@ import com.irudaru.depcalculator.ui.theme.DepCalculatorTheme
  */
 object DepositListDestination: NavigationDestination {
     override val route = "deposit_list"
-    override val titleRes = R.string.app_name
+    override val titleRes = R.string.title_appBar_depositListScreen
 }
 
 /**
- * Entry route for Deposit List Screen
+ * Entry route for [DepositListScreen]
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,28 +65,32 @@ fun DepositListScreen(modifier: Modifier = Modifier){
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = stringResource(id = R.string.fab_add_deposit_item)
+                    contentDescription = stringResource(id = R.string.addDeposit_fab_depositItemScreen)
                 )
             }
         }
     ) { innerPadding ->
         DepositListBody(
+            depositList = DepositListDataSample.depositList,
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                //.verticalScroll(rememberScrollState()) TODO: Error infinity scroll height
         )
     }
 }
 
 @Composable
-private fun DepositListBody(modifier: Modifier = Modifier) {
+private fun DepositListBody(
+    depositList: List<Deposit>,
+    modifier: Modifier = Modifier
+) {
     LazyColumn(
         modifier = modifier
     ) {
-        items(5) { index ->
+        items(depositList.size) {index ->
             DepositCard(
-                index = index,
+                deposit = depositList[index],
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(4.dp)
@@ -96,19 +100,19 @@ private fun DepositListBody(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun DepositCard(index: Int, modifier: Modifier = Modifier) {
+private fun DepositCard(deposit: Deposit, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier
     ) {
         DepositCardContent(
-            index = index,
+            deposit = deposit,
             modifier = Modifier.padding(8.dp)
         )
     }
 }
 
 @Composable
-private fun DepositCardContent(index: Int, modifier: Modifier = Modifier) {
+private fun DepositCardContent(deposit: Deposit, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
         Row(
             modifier = Modifier
@@ -116,12 +120,12 @@ private fun DepositCardContent(index: Int, modifier: Modifier = Modifier) {
                 .padding(vertical = 4.dp)
         ) {
             Text(
-                text = "Deposit $index",
+                text = deposit.title,
                 modifier = Modifier
                     .weight(1f)
             )
             Text(
-                text = "5%",
+                text = deposit.depositPercent.toString(),
                 modifier = Modifier.wrapContentWidth(Alignment.End)
             )
         }
@@ -130,7 +134,7 @@ private fun DepositCardContent(index: Int, modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .padding(vertical = 4.dp)
         ) {
-            Text(text = "10000$")
+            Text(text = deposit.depositAmount.toString())
         }
     }
 }
@@ -142,6 +146,6 @@ private fun DepositCardContent(index: Int, modifier: Modifier = Modifier) {
 @Composable
 private fun DepositListScreenPreview() {
     DepCalculatorTheme {
-        DepositListBody()
+        DepositListBody(DepositListDataSample.depositList)
     }
 }
