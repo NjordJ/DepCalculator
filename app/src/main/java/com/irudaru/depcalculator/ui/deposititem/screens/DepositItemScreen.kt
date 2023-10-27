@@ -59,7 +59,8 @@ fun DepositItemScreen(
         topBar = {
             DepositAppTopAppBar(
                 title = stringResource(DepositItemDestination.titleRes),
-                canNavigateBack = false,
+                canNavigateBack = canNavigateBack,
+                navigateUp = onNavigateUp,
                 scrollBehavior = scrollBehavior
             )
         },
