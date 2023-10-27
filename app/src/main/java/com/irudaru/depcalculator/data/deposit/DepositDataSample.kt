@@ -6,7 +6,7 @@ object DepositListDataSample {
             idDeposit = 1,
             title = "Deposit Plus",
             depositAmount = 4000.00,
-            depositPercent = 3.0
+            depositPercent = 100.0
         ),
         Deposit(
             idDeposit = 2,
@@ -33,7 +33,7 @@ object DepositItemDataSample {
     val depositItem = Deposit(
         idDeposit = 1,
         title = "Deposit Plus",
-        depositAmount = 4000.00,
+        depositAmount = 200000.00,
         depositPercent = 3.0
     )
 }

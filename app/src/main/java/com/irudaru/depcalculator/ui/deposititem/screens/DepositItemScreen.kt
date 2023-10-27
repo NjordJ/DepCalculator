@@ -38,6 +38,8 @@ import kotlinx.coroutines.launch
 object DepositItemDestination: NavigationDestination {
     override val route = "deposit_item"
     override val titleRes = R.string.title_appBar_depositItemScreen
+    const val depositItemIdArg = "depositItemId"
+    val routeWithArgs = "$route/{$depositItemIdArg}"
 }
 /**
  * Entry route for [DepositItemScreen]

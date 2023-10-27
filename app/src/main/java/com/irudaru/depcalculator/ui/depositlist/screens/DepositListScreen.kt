@@ -63,7 +63,7 @@ fun DepositListScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /*TODO: Add deposit button*/ },
+                onClick = { navigateToDepositItemUpdate(1) },
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
                     .padding(16.dp)
