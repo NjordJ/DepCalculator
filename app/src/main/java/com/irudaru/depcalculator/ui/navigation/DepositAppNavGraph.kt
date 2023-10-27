@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.irudaru.depcalculator.ui.deposititem.screens.DepositItemDestination
+import com.irudaru.depcalculator.ui.deposititem.screens.DepositItemScreen
 import com.irudaru.depcalculator.ui.depositlist.screens.DepositListDestination
 import com.irudaru.depcalculator.ui.depositlist.screens.DepositListScreen
 
@@ -24,11 +25,17 @@ fun DepositAppNavHost(
     ) {
         composable(route = DepositListDestination.route) {
             DepositListScreen(
-
+                navigateToDepositItem = { navController.navigate(DepositItemDestination.route) },
+                navigateToDepositItemUpdate = {
+                    navController.navigate("")
+                }
             )
         }
         composable(route = DepositItemDestination.route) {
-
+            DepositItemScreen(
+                navigateBack = { navController.popBackStack() },
+                onNavigateUp = { navController.navigateUp() }
+            )
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.irudaru.depcalculator.ui.depositlist.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -44,7 +45,11 @@ object DepositListDestination: NavigationDestination {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DepositListScreen(modifier: Modifier = Modifier){
+fun DepositListScreen(
+    navigateToDepositItem: () -> Unit,
+    navigateToDepositItemUpdate: (Int) -> Unit,
+    modifier: Modifier = Modifier
+){
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
@@ -72,6 +77,7 @@ fun DepositListScreen(modifier: Modifier = Modifier){
     ) { innerPadding ->
         DepositListBody(
             depositList = DepositListDataSample.depositList,
+            navigateToDepositItem = navigateToDepositItem,
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
@@ -83,6 +89,7 @@ fun DepositListScreen(modifier: Modifier = Modifier){
 @Composable
 private fun DepositListBody(
     depositList: List<Deposit>,
+    navigateToDepositItem: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -92,6 +99,7 @@ private fun DepositListBody(
             DepositCard(
                 deposit = depositList[index],
                 modifier = Modifier
+                    .clickable(onClick = navigateToDepositItem)
                     .fillMaxWidth()
                     .padding(4.dp)
             )
@@ -146,6 +154,9 @@ private fun DepositCardContent(deposit: Deposit, modifier: Modifier = Modifier) 
 @Composable
 private fun DepositListScreenPreview() {
     DepCalculatorTheme {
-        DepositListBody(DepositListDataSample.depositList)
+        DepositListBody(
+            depositList = DepositListDataSample.depositList,
+            navigateToDepositItem = {}
+        )
     }
 }

@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -29,6 +30,7 @@ import com.irudaru.depcalculator.data.deposit.DepositItemDataSample
 import com.irudaru.depcalculator.ui.DepositAppTopAppBar
 import com.irudaru.depcalculator.ui.navigation.NavigationDestination
 import com.irudaru.depcalculator.ui.theme.DepCalculatorTheme
+import kotlinx.coroutines.launch
 
 /**
  * Destination for [DepositItemScreen]
@@ -42,7 +44,14 @@ object DepositItemDestination: NavigationDestination {
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DepositItemScreen(modifier: Modifier = Modifier) {
+fun DepositItemScreen(
+    navigateBack: () -> Unit,
+    onNavigateUp: () -> Unit,
+    canNavigateBack: Boolean = true,
+    modifier: Modifier = Modifier
+) {
+    val coroutineScope = rememberCoroutineScope()
+
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
 
     Scaffold(
@@ -57,6 +66,11 @@ fun DepositItemScreen(modifier: Modifier = Modifier) {
     ) { innerPadding ->
         DepositItemBody(
             depositItem = DepositItemDataSample.depositItem,
+            onCalculateClick = {
+                coroutineScope.launch {
+
+                }
+            },
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
@@ -68,18 +82,25 @@ fun DepositItemScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun DepositItemBody(
     depositItem: Deposit,
+    onCalculateClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
     ) {
-        DepositItemContent(depositItem)
+        DepositItemContent(
+            depositItem = depositItem,
+            onCalculateClick = onCalculateClick
+        )
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DepositItemContent(depositItem: Deposit) {
+private fun DepositItemContent(
+    depositItem: Deposit,
+    onCalculateClick: () -> Unit
+) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -99,7 +120,7 @@ private fun DepositItemContent(depositItem: Deposit) {
         leadingIcon = {
             Icon(
                 painter = painterResource(id = R.drawable.ic_money),
-                contentDescription = ""
+                contentDescription = stringResource(id = R.string.depositMoney_textField_depositItemScreen)
             )
         },
         onValueChange = { /*TODO:*/ },
@@ -113,7 +134,7 @@ private fun DepositItemContent(depositItem: Deposit) {
         leadingIcon = {
             Icon(
                 painter = painterResource(id = R.drawable.ic_percent),
-                contentDescription = ""
+                contentDescription = stringResource(id = R.string.contributionPercent_textField_depositItemScreen)
             )
         },
         onValueChange = { /*TODO*/ },
@@ -139,6 +160,9 @@ private fun DepositItemContent(depositItem: Deposit) {
 @Composable
 private fun DepositItemScreenPreview() {
     DepCalculatorTheme {
-        DepositItemScreen()
+        DepositItemBody(
+            depositItem = DepositItemDataSample.depositItem,
+            onCalculateClick = {}
+        )
     }
 }
