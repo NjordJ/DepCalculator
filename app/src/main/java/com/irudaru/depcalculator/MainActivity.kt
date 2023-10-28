@@ -13,6 +13,7 @@ import com.irudaru.depcalculator.ui.theme.DepCalculatorTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             DepCalculatorTheme {
                 Surface(

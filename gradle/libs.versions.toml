@@ -1,5 +1,5 @@
 [versions]
-agp = "8.1.0"
+agp = "8.1.2"
 org-jetbrains-kotlin-android = "1.8.10"
 com-google-devtools-ksp = "1.8.10-1.0.9"
 
