@@ -16,6 +16,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,30 +30,36 @@ import com.irudaru.depcalculator.R
 import com.irudaru.depcalculator.data.deposit.Deposit
 import com.irudaru.depcalculator.data.deposit.DepositItemDataSample
 import com.irudaru.depcalculator.ui.DepositAppTopAppBar
+import com.irudaru.depcalculator.ui.deposititem.DepositItemViewModel
+import com.irudaru.depcalculator.ui.deposititem.toDeposit
 import com.irudaru.depcalculator.ui.navigation.NavigationDestination
 import com.irudaru.depcalculator.ui.theme.DepCalculatorTheme
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 /**
  * Destination for [DepositItemScreen]
  */
-object DepositItemDestination: NavigationDestination {
+object DepositItemDestination : NavigationDestination {
     override val route = "deposit_item"
     override val titleRes = R.string.title_appBar_depositItemScreen
-    const val depositItemIdArg = "depositItemId"
+    const val depositItemIdArg = "idDeposit"
     val routeWithArgs = "$route/{$depositItemIdArg}"
 }
+
 /**
  * Entry route for [DepositItemScreen]
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DepositItemScreen(
+    viewModel: DepositItemViewModel = koinViewModel(),
     navigateBack: () -> Unit,
     onNavigateUp: () -> Unit,
     canNavigateBack: Boolean = true,
     modifier: Modifier = Modifier
 ) {
+    val depositListUiState by viewModel.depositItemUiState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -68,7 +76,7 @@ fun DepositItemScreen(
         },
     ) { innerPadding ->
         DepositItemBody(
-            depositItem = DepositItemDataSample.depositItem,
+            depositItem = depositListUiState.depositItem.toDeposit(),
             onCalculateClick = {
                 coroutineScope.launch {
 
@@ -92,17 +100,24 @@ private fun DepositItemBody(
         modifier = modifier
     ) {
         DepositItemContent(
-            depositItem = depositItem,
-            onCalculateClick = onCalculateClick
+            depositItem = depositItem
         )
+
+        Button(
+            onClick = onCalculateClick,
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentWidth(Alignment.CenterHorizontally)
+        ) {
+            Text(text = stringResource(id = R.string.calculate_button_depositItemScreen))
+        }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DepositItemContent(
-    depositItem: Deposit,
-    onCalculateClick: () -> Unit
+fun DepositItemContent(
+    depositItem: Deposit
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -145,15 +160,6 @@ private fun DepositItemContent(
             .fillMaxWidth()
             .padding(vertical = 4.dp)
     )
-
-    Button(
-        onClick = { /*TODO*/ },
-        modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentWidth(Alignment.CenterHorizontally)
-    ) {
-        Text(text = stringResource(id = R.string.calculate_button_depositItemScreen))
-    }
 }
 
 @Preview(

@@ -1,10 +1,11 @@
 package com.irudaru.depcalculator
 
 import android.app.Application
-import com.irudaru.depcalculator.di.appModule
+import com.irudaru.depcalculator.di.injectFeature
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
+import org.koin.core.context.stopKoin
 
 /**
  * Main application of app
@@ -14,9 +15,14 @@ class DepositApplication : Application() {
         super.onCreate()
 
         startKoin {
-            androidLogger()
+            androidLogger() // if (BuildConfig) Level.ERROR else Level.NONE
             androidContext(this@DepositApplication)
-            modules(appModule)
+            injectFeature()
         }
+    }
+
+    override fun onTerminate() {
+        super.onTerminate()
+        stopKoin()
     }
 }

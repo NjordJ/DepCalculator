@@ -27,9 +27,11 @@ fun DepositAppNavHost(
     ) {
         composable(route = DepositListDestination.route) {
             DepositListScreen(
-                navigateToDepositItem = { navController.navigate("${DepositItemDestination.route}/$it") },
+                navigateToDepositItem = {
+                    navController.navigate("${DepositItemDestination.route}/$it")
+                },
                 navigateToDepositItemUpdate = {
-                    navController.navigate("")
+                    navController.navigate("${DepositItemDestination.route}/$it")
                 }
             )
         }
