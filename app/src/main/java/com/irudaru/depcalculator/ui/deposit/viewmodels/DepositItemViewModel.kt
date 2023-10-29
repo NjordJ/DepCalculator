@@ -110,7 +110,7 @@ fun DepositItem.toDeposit(): Deposit = Deposit(
     title = title,
     depositAmount = depositAmount.toDoubleOrNull() ?: 0.0,
     depositPercent = depositPercent.toDoubleOrNull() ?: 0.0,
-    lastCalculation = lastCalculation.toDoubleOrNull() ?: 0.0
+    lastCalculation = (depositAmount.toDouble() * (depositPercent.toDouble() / 100) / 365 * 367)
 )
 
 /**

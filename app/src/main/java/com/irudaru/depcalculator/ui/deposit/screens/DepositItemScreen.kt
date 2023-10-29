@@ -193,7 +193,7 @@ private fun CalculationCard(
                 .padding(12.dp)
         ) {
             Text(
-                text = "Profitability:",
+                text = stringResource(id = R.string.profitabilityForYear_Text_depositItemScreen),
                 style = MaterialTheme.typography.titleMedium
             )
             Row {
