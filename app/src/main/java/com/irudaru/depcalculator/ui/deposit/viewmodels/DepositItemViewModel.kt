@@ -40,13 +40,26 @@ class DepositItemViewModel(
 
     fun updateUiState(depositItem: DepositItem) {
         depositItemUiState =
-            DepositItemUiState(depositItem = depositItem)
+            DepositItemUiState(
+                depositItem = depositItem,
+                isEntryValid = validateInput(depositItem)
+            )
     }
 
 
-    suspend fun updateDepositItem() = depositRepository.updateDeposit(
-        depositItemUiState.depositItem.toDeposit()
-    )
+    suspend fun updateDepositItem() {
+        if (validateInput()) {
+            depositRepository.updateDeposit(
+                depositItemUiState.depositItem.toDeposit()
+            )
+        }
+    }
+
+    private fun validateInput(uiState: DepositItem = depositItemUiState.depositItem): Boolean {
+        return with(uiState) {
+            title.isNotBlank() && depositAmount.isNotBlank() && depositPercent.isNotBlank()
+        }
+    }
 
     suspend fun deleteDepositItem() = depositRepository.deleteDeposit(
         depositItemUiState.depositItem.toDeposit()
@@ -92,7 +105,8 @@ class DepositItemViewModel(
  * UI state for an Deposit Item
  */
 data class DepositItemUiState(
-    val depositItem: DepositItem = DepositItem()
+    val depositItem: DepositItem = DepositItem(),
+    val isEntryValid: Boolean = false
 )
 
 data class DepositItem(
@@ -128,6 +142,8 @@ fun Deposit.toDepositItem(): DepositItem = DepositItem(
 /**
  * Extension function to convert [Deposit] to [DepositItemUiState]
  */
-fun Deposit.toDepositItemUiState(): DepositItemUiState = DepositItemUiState(
-    depositItem = this.toDepositItem()
-)
+fun Deposit.toDepositItemUiState(isEntryValid: Boolean = false): DepositItemUiState =
+    DepositItemUiState(
+        depositItem = this.toDepositItem(),
+        isEntryValid = isEntryValid
+    )
