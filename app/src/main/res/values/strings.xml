@@ -6,11 +6,18 @@
 
     <!--Deposit List Screen-->
     <string name="title_appBar_depositListScreen">Deposit calculator</string>
-    <string name="addDeposit_fab_depositItemScreen">Add deposit item</string>
+    <string name="addDeposit_fab_depositListScreen">Add deposit item</string>
+    <string name="noDeposit_text_depositListScreen">No deposits available. Press + to add new deposit</string>
 
     <!--Deposit Item Screen-->
     <string name="title_appBar_depositItemScreen">Deposit item</string>
-    <string name="calculate_button_depositItemScreen">Calculate</string>
+    <string name="calculate_button_depositItemScreen">Calculate &amp; update</string>
+    <string name="delete_button_depositItemScreen">Delete</string>
+    <string name="title_textField_depositItemScreen">Title</string>
     <string name="depositMoney_textField_depositItemScreen">Amount of money</string>
     <string name="contributionPercent_textField_depositItemScreen">Contribution percent</string>
+
+    <!--Deposit Item Entry Screen-->
+    <string name="title_appBar_depositItemEntryScreen">New deposit</string>
+    <string name="save_button_depositItemScreen">Save</string>
 </resources>

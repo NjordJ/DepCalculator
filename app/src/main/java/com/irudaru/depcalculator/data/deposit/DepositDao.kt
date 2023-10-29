@@ -26,6 +26,6 @@ interface DepositDao {
     @Query("SELECT * FROM deposits WHERE id_deposit = :depositId")
     fun getDeposit(depositId: Int): Flow<Deposit>
 
-    @Query("SELECT * FROM deposits ORDER BY title ASC")
+    @Query("SELECT * FROM deposits ORDER BY id_deposit ASC")
     fun getAllDeposits(): Flow<List<Deposit>>
 }

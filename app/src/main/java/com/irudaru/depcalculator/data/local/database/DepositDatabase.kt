@@ -7,8 +7,10 @@ import androidx.room.RoomDatabase
 import com.irudaru.depcalculator.data.deposit.Deposit
 import com.irudaru.depcalculator.data.deposit.DepositDao
 
+const val DEPOSIT_DATABASE_NAME = "deposit_database"
+
 /**
- * Database that provides CRUD operations and contain entities
+ * Database that provides CRUD operations and entities
  */
 @Database(
     entities = [Deposit::class],
@@ -25,7 +27,7 @@ abstract class DepositDatabase: RoomDatabase() {
         fun getDatabase(context: Context): DepositDatabase {
             // If instance is not null, return it. Otherwise create a new database instance
             return Instance ?: synchronized(this) {
-                Room.databaseBuilder(context, DepositDatabase::class.java, "deposit_database")
+                Room.databaseBuilder(context, DepositDatabase::class.java, DEPOSIT_DATABASE_NAME)
                     .fallbackToDestructiveMigration()
                     .build()
                     .also { Instance = it }
