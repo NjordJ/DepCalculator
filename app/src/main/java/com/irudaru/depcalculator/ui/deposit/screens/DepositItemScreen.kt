@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,6 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.irudaru.depcalculator.R
@@ -145,19 +149,6 @@ fun DepositItemContent(
     depositItem: DepositItem,
     onValueChange: (DepositItem) -> Unit = {}
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 4.dp)
-    ) {
-        Text(
-            text = depositItem.title,
-            modifier = Modifier
-                .weight(1f)
-                .padding(4.dp)
-        )
-    }
     TextField(
         value = depositItem.title,
         label = { Text(text = stringResource(id = R.string.title_textField_depositItemScreen)) },
@@ -167,6 +158,12 @@ fun DepositItemContent(
                 contentDescription = stringResource(id = R.string.title_textField_depositItemScreen)
             )
         },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(
+            capitalization = KeyboardCapitalization.Sentences,
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Next
+        ),
         onValueChange = { onValueChange(depositItem.copy(title = it)) },
         modifier = Modifier
             .fillMaxWidth()
@@ -181,6 +178,12 @@ fun DepositItemContent(
                 contentDescription = stringResource(id = R.string.depositMoney_textField_depositItemScreen)
             )
         },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(
+            capitalization = KeyboardCapitalization.None,
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Next
+        ),
         onValueChange = { onValueChange(depositItem.copy(depositAmount = it)) },
         modifier = Modifier
             .fillMaxWidth()
@@ -195,6 +198,12 @@ fun DepositItemContent(
                 contentDescription = stringResource(id = R.string.contributionPercent_textField_depositItemScreen)
             )
         },
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(
+            capitalization = KeyboardCapitalization.None,
+            keyboardType = KeyboardType.Number,
+            imeAction = ImeAction.Done
+        ),
         onValueChange = { onValueChange(depositItem.copy(depositPercent = it)) },
         modifier = Modifier
             .fillMaxWidth()
@@ -221,7 +230,7 @@ private fun DepositItemScreenPreview() {
             buttonText = R.string.calculate_button_depositItemScreen,
             deleteButton = {
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = { },
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentWidth(Alignment.CenterHorizontally)

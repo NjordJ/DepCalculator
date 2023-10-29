@@ -1,6 +1,5 @@
 package com.irudaru.depcalculator.ui.deposit.screens
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,6 +25,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -126,6 +126,7 @@ private fun DepositList(
         items(items = depositList, key = { it.idDeposit }) { deposit ->
             DepositCard(deposit = deposit,
                 modifier = Modifier
+                    .padding(8.dp)
                     .clickable { onDepositItemClick(deposit) })
         }
     }
@@ -140,12 +141,17 @@ private fun DepositCard(deposit: Deposit, modifier: Modifier = Modifier) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp)
+                    .padding(top = 4.dp, bottom = 4.dp, start = 10.dp)
             ) {
                 Text(
                     text = deposit.title,
                     modifier = Modifier
                         .weight(1f)
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_percent),
+                    contentDescription = stringResource(id = R.string.contributionPercent_textField_depositItemScreen),
+                    modifier = Modifier.padding(horizontal = 4.dp)
                 )
                 Text(
                     text = deposit.depositPercent.toString(),
@@ -157,6 +163,11 @@ private fun DepositCard(deposit: Deposit, modifier: Modifier = Modifier) {
                     .fillMaxWidth()
                     .padding(vertical = 4.dp)
             ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_money),
+                    contentDescription = stringResource(id = R.string.depositMoney_textField_depositItemScreen),
+                    modifier = Modifier.padding(horizontal = 4.dp)
+                )
                 Text(text = deposit.depositAmount.toString())
             }
         }
@@ -170,8 +181,13 @@ private fun DepositCard(deposit: Deposit, modifier: Modifier = Modifier) {
 @Composable
 private fun DepositListScreenPreview() {
     DepCalculatorTheme {
-        DepositCard(
-            Deposit(1, "Valuable", 5000.0, 7.0)
+        DepositList(
+            depositList = listOf(
+                Deposit(1, "Valuable", 5000.0, 7.0),
+                Deposit(2, "Valuable", 5000.0, 7.0),
+                Deposit(3, "Valuable", 5000.0, 7.0)
+            ),
+            onDepositItemClick = { }
         )
     }
 }
