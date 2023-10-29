@@ -90,7 +90,8 @@ private fun DepositItemEntryScreenPreview() {
                     1,
                     "Valuable",
                     5000.0,
-                    7.0
+                    7.0,
+                    5350.0
                 ).toDepositItem()
             ),
             buttonText = R.string.calculate_button_depositItemScreen,

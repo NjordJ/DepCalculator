@@ -183,9 +183,9 @@ private fun DepositListScreenPreview() {
     DepCalculatorTheme {
         DepositList(
             depositList = listOf(
-                Deposit(1, "Valuable", 5000.0, 7.0),
-                Deposit(2, "Valuable", 5000.0, 7.0),
-                Deposit(3, "Valuable", 5000.0, 7.0)
+                Deposit(1, "Valuable", 5000.0, 7.0, 5350.0),
+                Deposit(2, "Valuable", 5000.0, 7.0, 5350.0),
+                Deposit(3, "Valuable", 5000.0, 7.0, 5350.0)
             ),
             onDepositItemClick = { }
         )

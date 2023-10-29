@@ -16,6 +16,7 @@
     <string name="title_textField_depositItemScreen">Title</string>
     <string name="depositMoney_textField_depositItemScreen">Amount of money</string>
     <string name="contributionPercent_textField_depositItemScreen">Contribution percent</string>
+    <string name="calculationHistory_Text_depositItemScreen">Calculation history</string>
 
     <!--Deposit Item Entry Screen-->
     <string name="title_appBar_depositItemEntryScreen">New deposit</string>

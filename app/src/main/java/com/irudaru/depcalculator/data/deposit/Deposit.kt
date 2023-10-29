@@ -15,4 +15,5 @@ data class Deposit(
     @ColumnInfo(name = "title") val title: String,
     @ColumnInfo(name = "deposit_amount") val depositAmount: Double,
     @ColumnInfo(name = "deposit_percent") val depositPercent: Double,
+    @ColumnInfo(name = "last_calculation") val lastCalculation: Double
 )

@@ -99,6 +99,7 @@ data class DepositItem(
     val title: String = "",
     val depositAmount: String = "",
     val depositPercent: String = "",
+    val lastCalculation: String = ""
 )
 
 /**
@@ -108,7 +109,8 @@ fun DepositItem.toDeposit(): Deposit = Deposit(
     idDeposit = idDeposit,
     title = title,
     depositAmount = depositAmount.toDoubleOrNull() ?: 0.0,
-    depositPercent = depositPercent.toDoubleOrNull() ?: 0.0
+    depositPercent = depositPercent.toDoubleOrNull() ?: 0.0,
+    lastCalculation = lastCalculation.toDoubleOrNull() ?: 0.0
 )
 
 /**
@@ -118,7 +120,8 @@ fun Deposit.toDepositItem(): DepositItem = DepositItem(
     idDeposit = idDeposit,
     title = title,
     depositAmount = depositAmount.toString(),
-    depositPercent = depositPercent.toString()
+    depositPercent = depositPercent.toString(),
+    lastCalculation = lastCalculation.toString()
 )
 
 /**

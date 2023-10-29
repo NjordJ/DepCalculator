@@ -5,14 +5,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -98,6 +102,11 @@ fun DepositItemScreen(
                     Text(text = stringResource(id = R.string.delete_button_depositItemScreen))
                 }
             },
+            calculationHistory = {
+                CalculationHistory(
+                    depositItem = viewModel.depositItemUiState.depositItem
+                )
+            },
             onButtonClick = {
                 coroutineScope.launch {
                     viewModel.updateDepositItem()
@@ -118,6 +127,7 @@ fun DepositItemBody(
     depositItemUiState: DepositItemUiState,
     @StringRes buttonText: Int,
     deleteButton: @Composable () -> Unit = {},
+    calculationHistory: @Composable () -> Unit = {},
     onButtonClick: () -> Unit,
     onDepositItemValueChange: (DepositItem) -> Unit,
     modifier: Modifier = Modifier
@@ -127,7 +137,9 @@ fun DepositItemBody(
     ) {
         DepositItemContent(
             depositItem = depositItemUiState.depositItem,
-            onValueChange = onDepositItemValueChange
+            onValueChange = onDepositItemValueChange,
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
         )
 
         Button(
@@ -138,8 +150,56 @@ fun DepositItemBody(
         ) {
             Text(text = stringResource(id = buttonText))
         }
-
         deleteButton.invoke()
+        calculationHistory.invoke()
+    }
+}
+
+@Composable
+private fun CalculationHistory(
+    depositItem: DepositItem,
+) {
+    Divider(
+        color = MaterialTheme.colorScheme.primary,
+        thickness = 2.dp,
+        modifier = Modifier
+            .padding(top = 8.dp)
+            .height(2.dp)
+            .fillMaxWidth()
+    )
+    Text(
+        text = stringResource(id = R.string.calculationHistory_Text_depositItemScreen),
+        style = MaterialTheme.typography.titleLarge,
+        modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentWidth()
+    )
+    CalculationCard(
+        depositItem = depositItem,
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+    )
+}
+
+@Composable
+private fun CalculationCard(
+    depositItem: DepositItem,
+    modifier: Modifier = Modifier
+) {
+    Card(modifier = modifier) {
+        Column(
+            modifier = Modifier
+                .padding(12.dp)
+        ) {
+            Text(
+                text = "Profitability:",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Row {
+                Text(text = depositItem.lastCalculation)
+            }
+        }
     }
 }
 
@@ -147,68 +207,71 @@ fun DepositItemBody(
 @Composable
 fun DepositItemContent(
     depositItem: DepositItem,
-    onValueChange: (DepositItem) -> Unit = {}
+    onValueChange: (DepositItem) -> Unit = {},
+    modifier: Modifier = Modifier
 ) {
-    TextField(
-        value = depositItem.title,
-        label = { Text(text = stringResource(id = R.string.title_textField_depositItemScreen)) },
-        leadingIcon = {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_title),
-                contentDescription = stringResource(id = R.string.title_textField_depositItemScreen)
-            )
-        },
-        singleLine = true,
-        keyboardOptions = KeyboardOptions(
-            capitalization = KeyboardCapitalization.Sentences,
-            keyboardType = KeyboardType.Text,
-            imeAction = ImeAction.Next
-        ),
-        onValueChange = { onValueChange(depositItem.copy(title = it)) },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp)
-    )
-    TextField(
-        value = depositItem.depositAmount,
-        label = { Text(text = stringResource(id = R.string.depositMoney_textField_depositItemScreen)) },
-        leadingIcon = {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_money),
-                contentDescription = stringResource(id = R.string.depositMoney_textField_depositItemScreen)
-            )
-        },
-        singleLine = true,
-        keyboardOptions = KeyboardOptions(
-            capitalization = KeyboardCapitalization.None,
-            keyboardType = KeyboardType.Number,
-            imeAction = ImeAction.Next
-        ),
-        onValueChange = { onValueChange(depositItem.copy(depositAmount = it)) },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp)
-    )
-    TextField(
-        value = depositItem.depositPercent,
-        label = { Text(text = stringResource(id = R.string.contributionPercent_textField_depositItemScreen)) },
-        leadingIcon = {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_percent),
-                contentDescription = stringResource(id = R.string.contributionPercent_textField_depositItemScreen)
-            )
-        },
-        singleLine = true,
-        keyboardOptions = KeyboardOptions(
-            capitalization = KeyboardCapitalization.None,
-            keyboardType = KeyboardType.Number,
-            imeAction = ImeAction.Done
-        ),
-        onValueChange = { onValueChange(depositItem.copy(depositPercent = it)) },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 4.dp)
-    )
+    Column(modifier = modifier) {
+        TextField(
+            value = depositItem.title,
+            label = { Text(text = stringResource(id = R.string.title_textField_depositItemScreen)) },
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_title),
+                    contentDescription = stringResource(id = R.string.title_textField_depositItemScreen)
+                )
+            },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Sentences,
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            ),
+            onValueChange = { onValueChange(depositItem.copy(title = it)) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+        )
+        TextField(
+            value = depositItem.depositAmount,
+            label = { Text(text = stringResource(id = R.string.depositMoney_textField_depositItemScreen)) },
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_money),
+                    contentDescription = stringResource(id = R.string.depositMoney_textField_depositItemScreen)
+                )
+            },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.None,
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next
+            ),
+            onValueChange = { onValueChange(depositItem.copy(depositAmount = it)) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+        )
+        TextField(
+            value = depositItem.depositPercent,
+            label = { Text(text = stringResource(id = R.string.contributionPercent_textField_depositItemScreen)) },
+            leadingIcon = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_percent),
+                    contentDescription = stringResource(id = R.string.contributionPercent_textField_depositItemScreen)
+                )
+            },
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.None,
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done
+            ),
+            onValueChange = { onValueChange(depositItem.copy(depositPercent = it)) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp)
+        )
+    }
 }
 
 @Preview(
@@ -224,7 +287,8 @@ private fun DepositItemScreenPreview() {
                     1,
                     "Valuable",
                     5000.0,
-                    7.0
+                    7.0,
+                    5350.0
                 ).toDepositItem()
             ),
             buttonText = R.string.calculate_button_depositItemScreen,
@@ -237,6 +301,17 @@ private fun DepositItemScreenPreview() {
                 ) {
                     Text(text = stringResource(id = R.string.delete_button_depositItemScreen))
                 }
+            },
+            calculationHistory = {
+                CalculationHistory(
+                    depositItem = Deposit(
+                        1,
+                        "Valuable",
+                        5000.0,
+                        7.0,
+                        5350.0
+                    ).toDepositItem()
+                )
             },
             onButtonClick = {},
             onDepositItemValueChange = {}
