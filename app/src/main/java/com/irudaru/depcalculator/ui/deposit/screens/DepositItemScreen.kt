@@ -17,8 +17,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -81,13 +79,27 @@ fun DepositItemScreen(
             depositItemUiState = viewModel.depositItemUiState, //depositListUiState.depositItem.toDeposit(),
             //depositItemUiState = depositListUiState,
             buttonText = R.string.calculate_button_depositItemScreen,
+            deleteButton = {
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            viewModel.deleteDepositItem()
+                            navigateBack()
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentWidth(Alignment.CenterHorizontally)
+                ) {
+                    Text(text = stringResource(id = R.string.delete_button_depositItemScreen))
+                }
+            },
             onButtonClick = {
                 coroutineScope.launch {
                     viewModel.updateDepositItem()
                     navigateBack()
                 }
             },
-            //onDepositItemValueChange = viewModel::updateUiState,
             onDepositItemValueChange = viewModel::updateUiState,
             modifier = Modifier
                 .padding(innerPadding)
@@ -101,6 +113,7 @@ fun DepositItemScreen(
 fun DepositItemBody(
     depositItemUiState: DepositItemUiState,
     @StringRes buttonText: Int,
+    deleteButton: @Composable () -> Unit = {},
     onButtonClick: () -> Unit,
     onDepositItemValueChange: (DepositItem) -> Unit,
     modifier: Modifier = Modifier
@@ -121,6 +134,8 @@ fun DepositItemBody(
         ) {
             Text(text = stringResource(id = buttonText))
         }
+
+        deleteButton.invoke()
     }
 }
 
@@ -204,6 +219,16 @@ private fun DepositItemScreenPreview() {
                 ).toDepositItem()
             ),
             buttonText = R.string.calculate_button_depositItemScreen,
+            deleteButton = {
+                Button(
+                    onClick = { /*TODO*/ },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentWidth(Alignment.CenterHorizontally)
+                ) {
+                    Text(text = stringResource(id = R.string.delete_button_depositItemScreen))
+                }
+            },
             onButtonClick = {},
             onDepositItemValueChange = {}
         )

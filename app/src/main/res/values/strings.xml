@@ -11,7 +11,8 @@
 
     <!--Deposit Item Screen-->
     <string name="title_appBar_depositItemScreen">Deposit item</string>
-    <string name="calculate_button_depositItemScreen">Calculate</string>
+    <string name="calculate_button_depositItemScreen">Calculate &amp; update</string>
+    <string name="delete_button_depositItemScreen">Delete</string>
     <string name="title_textField_depositItemScreen">Title</string>
     <string name="depositMoney_textField_depositItemScreen">Amount of money</string>
     <string name="contributionPercent_textField_depositItemScreen">Contribution percent</string>

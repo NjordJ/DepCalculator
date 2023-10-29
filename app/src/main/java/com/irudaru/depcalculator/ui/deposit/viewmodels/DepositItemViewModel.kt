@@ -47,6 +47,10 @@ class DepositItemViewModel(
         depositItemUiState.depositItem.toDeposit()
     )
 
+    suspend fun deleteDepositItem() = depositRepository.deleteDeposit(
+        depositItemUiState.depositItem.toDeposit()
+    )
+
 //    init {
 //        val depositId: Int =
 //            checkNotNull(savedStateHandle[DepositItemDestination.depositItemIdArg])
