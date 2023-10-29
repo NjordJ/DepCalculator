@@ -1,5 +1,6 @@
-package com.irudaru.depcalculator.ui.deposititem.screens
+package com.irudaru.depcalculator.ui.deposit.screens
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,10 +29,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.irudaru.depcalculator.R
 import com.irudaru.depcalculator.data.deposit.Deposit
-import com.irudaru.depcalculator.data.deposit.DepositItemDataSample
 import com.irudaru.depcalculator.ui.DepositAppTopAppBar
-import com.irudaru.depcalculator.ui.deposititem.DepositItemViewModel
-import com.irudaru.depcalculator.ui.deposititem.toDeposit
+import com.irudaru.depcalculator.ui.deposit.viewmodels.DepositItem
+import com.irudaru.depcalculator.ui.deposit.viewmodels.DepositItemUiState
+import com.irudaru.depcalculator.ui.deposit.viewmodels.DepositItemViewModel
+import com.irudaru.depcalculator.ui.deposit.viewmodels.toDepositItem
 import com.irudaru.depcalculator.ui.navigation.NavigationDestination
 import com.irudaru.depcalculator.ui.theme.DepCalculatorTheme
 import kotlinx.coroutines.launch
@@ -59,7 +61,7 @@ fun DepositItemScreen(
     canNavigateBack: Boolean = true,
     modifier: Modifier = Modifier
 ) {
-    val depositListUiState by viewModel.depositItemUiState.collectAsState()
+    //val depositListUiState by viewModel.depositItemUiState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
 
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -76,12 +78,17 @@ fun DepositItemScreen(
         },
     ) { innerPadding ->
         DepositItemBody(
-            depositItem = depositListUiState.depositItem.toDeposit(),
-            onCalculateClick = {
+            depositItemUiState = viewModel.depositItemUiState, //depositListUiState.depositItem.toDeposit(),
+            //depositItemUiState = depositListUiState,
+            buttonText = R.string.calculate_button_depositItemScreen,
+            onButtonClick = {
                 coroutineScope.launch {
-
+                    viewModel.updateDepositItem()
+                    navigateBack()
                 }
             },
+            //onDepositItemValueChange = viewModel::updateUiState,
+            onDepositItemValueChange = viewModel::updateUiState,
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
@@ -91,25 +98,28 @@ fun DepositItemScreen(
 }
 
 @Composable
-private fun DepositItemBody(
-    depositItem: Deposit,
-    onCalculateClick: () -> Unit,
+fun DepositItemBody(
+    depositItemUiState: DepositItemUiState,
+    @StringRes buttonText: Int,
+    onButtonClick: () -> Unit,
+    onDepositItemValueChange: (DepositItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier
     ) {
         DepositItemContent(
-            depositItem = depositItem
+            depositItem = depositItemUiState.depositItem,
+            onValueChange = onDepositItemValueChange
         )
 
         Button(
-            onClick = onCalculateClick,
+            onClick = onButtonClick,
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentWidth(Alignment.CenterHorizontally)
         ) {
-            Text(text = stringResource(id = R.string.calculate_button_depositItemScreen))
+            Text(text = stringResource(id = buttonText))
         }
     }
 }
@@ -117,7 +127,8 @@ private fun DepositItemBody(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DepositItemContent(
-    depositItem: Deposit
+    depositItem: DepositItem,
+    onValueChange: (DepositItem) -> Unit = {}
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -133,7 +144,21 @@ fun DepositItemContent(
         )
     }
     TextField(
-        value = depositItem.depositAmount.toString(),
+        value = depositItem.title,
+        label = { Text(text = stringResource(id = R.string.title_textField_depositItemScreen)) },
+        leadingIcon = {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_title),
+                contentDescription = stringResource(id = R.string.title_textField_depositItemScreen)
+            )
+        },
+        onValueChange = { onValueChange(depositItem.copy(title = it)) },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+    )
+    TextField(
+        value = depositItem.depositAmount,
         label = { Text(text = stringResource(id = R.string.depositMoney_textField_depositItemScreen)) },
         leadingIcon = {
             Icon(
@@ -141,13 +166,13 @@ fun DepositItemContent(
                 contentDescription = stringResource(id = R.string.depositMoney_textField_depositItemScreen)
             )
         },
-        onValueChange = { /*TODO:*/ },
+        onValueChange = { onValueChange(depositItem.copy(depositAmount = it)) },
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
     )
     TextField(
-        value = depositItem.depositPercent.toString(),
+        value = depositItem.depositPercent,
         label = { Text(text = stringResource(id = R.string.contributionPercent_textField_depositItemScreen)) },
         leadingIcon = {
             Icon(
@@ -155,7 +180,7 @@ fun DepositItemContent(
                 contentDescription = stringResource(id = R.string.contributionPercent_textField_depositItemScreen)
             )
         },
-        onValueChange = { /*TODO*/ },
+        onValueChange = { onValueChange(depositItem.copy(depositPercent = it)) },
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
@@ -170,8 +195,17 @@ fun DepositItemContent(
 private fun DepositItemScreenPreview() {
     DepCalculatorTheme {
         DepositItemBody(
-            depositItem = DepositItemDataSample.depositItem,
-            onCalculateClick = {}
+            depositItemUiState = DepositItemUiState(
+                Deposit(
+                    1,
+                    "Valuable",
+                    5000.0,
+                    7.0
+                ).toDepositItem()
+            ),
+            buttonText = R.string.calculate_button_depositItemScreen,
+            onButtonClick = {},
+            onDepositItemValueChange = {}
         )
     }
 }

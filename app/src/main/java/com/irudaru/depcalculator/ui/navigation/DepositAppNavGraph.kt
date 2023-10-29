@@ -7,10 +7,12 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.irudaru.depcalculator.ui.deposititem.screens.DepositItemDestination
-import com.irudaru.depcalculator.ui.deposititem.screens.DepositItemScreen
-import com.irudaru.depcalculator.ui.depositlist.screens.DepositListDestination
-import com.irudaru.depcalculator.ui.depositlist.screens.DepositListScreen
+import com.irudaru.depcalculator.ui.deposit.screens.DepositItemDestination
+import com.irudaru.depcalculator.ui.deposit.screens.DepositItemEntryDestination
+import com.irudaru.depcalculator.ui.deposit.screens.DepositItemEntryScreen
+import com.irudaru.depcalculator.ui.deposit.screens.DepositItemScreen
+import com.irudaru.depcalculator.ui.deposit.screens.DepositListDestination
+import com.irudaru.depcalculator.ui.deposit.screens.DepositListScreen
 
 /**
  * Provides Navigation graph for the application
@@ -31,8 +33,14 @@ fun DepositAppNavHost(
                     navController.navigate("${DepositItemDestination.route}/$it")
                 },
                 navigateToDepositItemUpdate = {
-                    navController.navigate("${DepositItemDestination.route}/$it")
+                    navController.navigate(DepositItemEntryDestination.route)
                 }
+            )
+        }
+        composable(route = DepositItemEntryDestination.route) {
+            DepositItemEntryScreen(
+                navigateBack = { navController.popBackStack() },
+                onNavigateUp = { navController.navigateUp() }
             )
         }
         composable(

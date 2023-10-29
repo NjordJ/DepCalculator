@@ -9,10 +9,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.irudaru.depcalculator.ui.DepositApp
 import com.irudaru.depcalculator.ui.theme.DepCalculatorTheme
+import org.koin.compose.KoinContext
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
 
         setContent {
             DepCalculatorTheme {
@@ -20,7 +22,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    DepositApp()
+                    KoinContext {
+                        DepositApp()
+                    }
                 }
             }
         }

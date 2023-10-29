@@ -1,4 +1,4 @@
-package com.irudaru.depcalculator.ui.depositlist
+package com.irudaru.depcalculator.ui.deposit.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,7 +17,8 @@ class DepositListViewModel(
 ) : ViewModel() {
 
     val depositListUiState: StateFlow<DepositListUiState> =
-        depositRepository.getAllDepositsStream().map { deposits -> DepositListUiState(deposits) }
+        depositRepository.getAllDepositsStream()
+            .map { deposits -> DepositListUiState(deposits) }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),

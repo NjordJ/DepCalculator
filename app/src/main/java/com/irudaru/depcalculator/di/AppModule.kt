@@ -3,8 +3,9 @@ package com.irudaru.depcalculator.di
 import com.irudaru.depcalculator.data.deposit.DepositDao
 import com.irudaru.depcalculator.data.deposit.OfflineDepositsRepository
 import com.irudaru.depcalculator.data.local.database.DepositDatabase
-import com.irudaru.depcalculator.ui.deposititem.DepositItemViewModel
-import com.irudaru.depcalculator.ui.depositlist.DepositListViewModel
+import com.irudaru.depcalculator.ui.deposit.viewmodels.DepositItemEntryViewModel
+import com.irudaru.depcalculator.ui.deposit.viewmodels.DepositItemViewModel
+import com.irudaru.depcalculator.ui.deposit.viewmodels.DepositListViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.loadKoinModules
@@ -39,4 +40,5 @@ private val repositoryModule = module {
 private val viewModelModule = module {
     viewModel<DepositListViewModel> { DepositListViewModel(get()) }
     viewModel<DepositItemViewModel> { DepositItemViewModel(get(), get()) }
+    viewModel<DepositItemEntryViewModel> { DepositItemEntryViewModel(get()) }
 }

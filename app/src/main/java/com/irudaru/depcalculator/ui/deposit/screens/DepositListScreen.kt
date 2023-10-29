@@ -1,5 +1,6 @@
-package com.irudaru.depcalculator.ui.depositlist.screens
+package com.irudaru.depcalculator.ui.deposit.screens
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,12 +27,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.irudaru.depcalculator.R
 import com.irudaru.depcalculator.data.deposit.Deposit
 import com.irudaru.depcalculator.ui.DepositAppTopAppBar
-import com.irudaru.depcalculator.ui.depositlist.DepositListViewModel
+import com.irudaru.depcalculator.ui.deposit.viewmodels.DepositListViewModel
 import com.irudaru.depcalculator.ui.navigation.NavigationDestination
 import com.irudaru.depcalculator.ui.theme.DepCalculatorTheme
 import org.koin.androidx.compose.koinViewModel
@@ -52,7 +54,7 @@ object DepositListDestination : NavigationDestination {
 fun DepositListScreen(
     viewModel: DepositListViewModel = koinViewModel(),
     navigateToDepositItem: (Int) -> Unit,
-    navigateToDepositItemUpdate: (Int) -> Unit,
+    navigateToDepositItemUpdate: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val depositListUiState by viewModel.depositListUiState.collectAsState()
@@ -70,21 +72,21 @@ fun DepositListScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { navigateToDepositItemUpdate(0) },
+                onClick = { navigateToDepositItemUpdate() },
                 shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
                     .padding(16.dp)
             ) {
                 Icon(
                     imageVector = Icons.Filled.Add,
-                    contentDescription = stringResource(id = R.string.addDeposit_fab_depositItemScreen)
+                    contentDescription = stringResource(id = R.string.addDeposit_fab_depositListScreen)
                 )
             }
         }
     ) { innerPadding ->
         DepositListBody(
             depositList = depositListUiState.depositList,
-            onDepositClick = { navigateToDepositItem(it.idDeposit) },
+            onDepositItemClick = navigateToDepositItem,
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
@@ -96,20 +98,35 @@ fun DepositListScreen(
 @Composable
 private fun DepositListBody(
     depositList: List<Deposit>,
-    onDepositClick: (Deposit) -> Unit,
+    onDepositItemClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
-        modifier = modifier
-    ) {
+    if (depositList.isEmpty()) {
+        Text(
+            text = stringResource(id = R.string.noDeposit_text_depositListScreen),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.titleLarge
+        )
+    } else {
+        DepositList(
+            depositList = depositList,
+            onDepositItemClick = { onDepositItemClick(it.idDeposit) },
+            modifier = modifier
+        )
+    }
+}
+
+@Composable
+private fun DepositList(
+    depositList: List<Deposit>,
+    onDepositItemClick: (Deposit) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(modifier = modifier) {
         items(items = depositList, key = { it.idDeposit }) { deposit ->
-            DepositCard(
-                deposit = deposit,
+            DepositCard(deposit = deposit,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(4.dp)
-                    .clickable { onDepositClick(deposit) }
-            )
+                    .clickable { onDepositItemClick(deposit) })
         }
     }
 }
@@ -119,37 +136,29 @@ private fun DepositCard(deposit: Deposit, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier
     ) {
-        DepositCardContent(
-            deposit = deposit,
-            modifier = Modifier.padding(8.dp)
-        )
-    }
-}
-
-@Composable
-private fun DepositCardContent(deposit: Deposit, modifier: Modifier = Modifier) {
-    Column(modifier = modifier) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp)
-        ) {
-            Text(
-                text = deposit.title,
+        Column(modifier = modifier) {
+            Row(
                 modifier = Modifier
-                    .weight(1f)
-            )
-            Text(
-                text = deposit.depositPercent.toString(),
-                modifier = Modifier.wrapContentWidth(Alignment.End)
-            )
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp)
-        ) {
-            Text(text = deposit.depositAmount.toString())
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp)
+            ) {
+                Text(
+                    text = deposit.title,
+                    modifier = Modifier
+                        .weight(1f)
+                )
+                Text(
+                    text = deposit.depositPercent.toString(),
+                    modifier = Modifier.wrapContentWidth(Alignment.End)
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp)
+            ) {
+                Text(text = deposit.depositAmount.toString())
+            }
         }
     }
 }
