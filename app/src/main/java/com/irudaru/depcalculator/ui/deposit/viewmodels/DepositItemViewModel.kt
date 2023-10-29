@@ -12,6 +12,7 @@ import com.irudaru.depcalculator.ui.deposit.screens.DepositItemDestination
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlin.math.round
 
 class DepositItemViewModel(
     savedStateHandle: SavedStateHandle,
@@ -110,7 +111,7 @@ fun DepositItem.toDeposit(): Deposit = Deposit(
     title = title,
     depositAmount = depositAmount.toDoubleOrNull() ?: 0.0,
     depositPercent = depositPercent.toDoubleOrNull() ?: 0.0,
-    lastCalculation = (depositAmount.toDouble() * (depositPercent.toDouble() / 100) / 365 * 367)
+    lastCalculation = round((depositAmount.toDouble() * (depositPercent.toDouble() / 100) / 365 * 367) * 100.0) / 100.0
 )
 
 /**

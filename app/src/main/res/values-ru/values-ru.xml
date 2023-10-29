@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Депозитный калькулятор</string>
+
+    <!--Deposit app-->
+    <string name="backButton_appBar">Добавить депозит</string>
+
+    <!--Deposit List Screen-->
+    <string name="title_appBar_depositListScreen">Список депозитов</string>
+    <string name="addDeposit_fab_depositListScreen">Добавить депозит</string>
+    <string name="noDeposit_text_depositListScreen">Нет доступных депозитов. Нажмите + чтобы добавить депозит</string>
+
+    <!--Deposit Item Screen-->
+    <string name="title_appBar_depositItemScreen">Депозит</string>
+    <string name="calculate_button_depositItemScreen">Расчитать &amp; обновить</string>
+    <string name="delete_button_depositItemScreen">Удалить</string>
+    <string name="title_textField_depositItemScreen">Название</string>
+    <string name="depositMoney_textField_depositItemScreen">Сумма средств</string>
+    <string name="contributionPercent_textField_depositItemScreen">Процентная ставка</string>
+    <string name="calculationHistory_Text_depositItemScreen">История расчетов</string>
+    <string name="profitabilityForYear_Text_depositItemScreen">Доходность за один год:</string>
+
+    <!--Deposit Item Entry Screen-->
+    <string name="title_appBar_depositItemEntryScreen">Новый депозит</string>
+    <string name="save_button_depositItemScreen">Сохранить</string>
+</resources>
