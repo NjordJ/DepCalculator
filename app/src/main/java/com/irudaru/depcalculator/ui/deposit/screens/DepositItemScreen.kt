@@ -144,6 +144,7 @@ fun DepositItemBody(
 
         Button(
             onClick = onButtonClick,
+            enabled = depositItemUiState.isEntryValid,
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentWidth(Alignment.CenterHorizontally)

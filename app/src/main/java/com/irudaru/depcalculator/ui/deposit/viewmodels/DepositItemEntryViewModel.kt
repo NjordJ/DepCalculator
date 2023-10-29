@@ -22,10 +22,23 @@ class DepositItemEntryViewModel(
      */
     fun updateUiState(depositItem: DepositItem) {
         depositItemUiState =
-            DepositItemUiState(depositItem = depositItem)
+            DepositItemUiState(
+                depositItem = depositItem,
+                isEntryValid = validateInput(depositItem)
+            )
     }
 
-    suspend fun saveDepositItem() = depositRepository.insertDeposit(
-        depositItemUiState.depositItem.toDeposit()
-    )
+    suspend fun saveDepositItem() {
+        if (validateInput()) {
+            depositRepository.insertDeposit(
+                depositItemUiState.depositItem.toDeposit()
+            )
+        }
+    }
+
+    private fun validateInput(uiState: DepositItem = depositItemUiState.depositItem): Boolean {
+        return with(uiState) {
+            title.isNotBlank() && depositAmount.isNotBlank() && depositPercent.isNotBlank()
+        }
+    }
 }
