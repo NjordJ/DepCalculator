@@ -42,12 +42,16 @@ class DepositItemViewModel(
         depositItemUiState =
             DepositItemUiState(
                 depositItem = depositItem,
-                isEntryValid = validateInput(depositItem)
+                isEntryValid = validateInput(depositItem),
+                depositPeriodValue = depositItem.depositPeriodValue,
+                isPayOutSelected = depositItem.isPayOutSelected
             )
     }
 
 
     suspend fun updateDepositItem() {
+        //if (depositItemUiState.isPayOutSelected)
+
         if (validateInput()) {
             depositRepository.updateDeposit(
                 depositItemUiState.depositItem.toDeposit()
@@ -58,6 +62,7 @@ class DepositItemViewModel(
     private fun validateInput(uiState: DepositItem = depositItemUiState.depositItem): Boolean {
         return with(uiState) {
             title.isNotBlank() && depositAmount.isNotBlank() && depositPercent.isNotBlank()
+                    && depositPeriodValue.isNotBlank()
         }
     }
 
@@ -99,6 +104,76 @@ class DepositItemViewModel(
 //    suspend fun updateDepositItem() {
 //        //depositRepository.updateDeposit(depositItemUiState.value.depositItem.toDeposit())
 //    }
+
+
+}
+
+private fun calculateDeposit(
+    amount: Double,
+    percentage: Double,
+    period: Int,
+    isPayOut: Boolean = true
+): Double {
+    return when(isPayOut) {
+        true -> {
+            calculateDepositWithPayoutAndYearPeriod(
+                amount = amount,
+                percentage = percentage,
+                period = period
+            )
+        }
+        false -> {
+            calculateDepositWithAddToDepositAndYearPeriod(
+                amount = amount,
+                percentage = percentage,
+                period = period
+            )
+        }
+    }
+}
+
+/**
+ * Function to calculate profitability with Pay out option and Year period
+ */
+private fun calculateDepositWithPayoutAndYearPeriod(
+    amount: Double,
+    percentage: Double,
+    period: Int
+): Double {
+    return (amount * (percentage / 100) / 365 * (365 * period)).roundNumberToTwoDigits()
+}
+
+/**
+ * Function to calculate profitability with Add To Deposit option and Year period
+ */
+private fun calculateDepositWithAddToDepositAndYearPeriod(
+    amount: Double,
+    percentage: Double,
+    period: Int
+): Double {
+    val amountMonth: Int = period * 12
+
+    var monthly = (amount * (percentage / 100) / (365 * period) * 30)
+    val resultMonth = mutableListOf<Double>(monthly)
+    var sumMonth = amount + monthly
+    var month = 1
+
+
+    while (month < amountMonth) {
+        monthly = (sumMonth * (percentage / 100) / (365 * period) * 30)
+        sumMonth += monthly
+        resultMonth.add(monthly)
+        month++
+    }
+
+    return (resultMonth.sum() * period).roundNumberToTwoDigits()
+}
+
+/**
+ * Extension function to round number to two digits
+ */
+private fun Double.roundNumberToTwoDigits(): Double {
+    return round((this) * 100.0) / 100.0
 }
 
 /**
@@ -106,7 +181,10 @@ class DepositItemViewModel(
  */
 data class DepositItemUiState(
     val depositItem: DepositItem = DepositItem(),
-    val isEntryValid: Boolean = false
+    val isEntryValid: Boolean = false,
+    val isPayOutSelected: Boolean = true,
+    var depositPeriodValue: String = "1",
+    var depositDateType: Int = 0
 )
 
 data class DepositItem(
@@ -114,7 +192,9 @@ data class DepositItem(
     val title: String = "",
     val depositAmount: String = "",
     val depositPercent: String = "",
-    val lastCalculation: String = ""
+    val lastCalculation: String = "",
+    val depositPeriodValue: String = "",
+    val isPayOutSelected: Boolean = true
 )
 
 /**
@@ -125,7 +205,12 @@ fun DepositItem.toDeposit(): Deposit = Deposit(
     title = title,
     depositAmount = depositAmount.toDoubleOrNull() ?: 0.0,
     depositPercent = depositPercent.toDoubleOrNull() ?: 0.0,
-    lastCalculation = round((depositAmount.toDouble() * (depositPercent.toDouble() / 100) / 365 * 367) * 100.0) / 100.0
+    lastCalculation = calculateDeposit(
+        amount = depositAmount.toDoubleOrNull() ?: 0.0,
+        percentage = depositPercent.toDoubleOrNull() ?: 0.0,
+        period = depositPeriodValue.toIntOrNull() ?: 1,
+        isPayOut = isPayOutSelected
+    )
 )
 
 /**

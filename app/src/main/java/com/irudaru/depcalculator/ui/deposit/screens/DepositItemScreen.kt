@@ -1,6 +1,7 @@
 package com.irudaru.depcalculator.ui.deposit.screens
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -13,7 +14,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -22,9 +26,15 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -40,6 +50,7 @@ import com.irudaru.depcalculator.ui.deposit.viewmodels.DepositItem
 import com.irudaru.depcalculator.ui.deposit.viewmodels.DepositItemUiState
 import com.irudaru.depcalculator.ui.deposit.viewmodels.DepositItemViewModel
 import com.irudaru.depcalculator.ui.deposit.viewmodels.toDepositItem
+import com.irudaru.depcalculator.ui.deposit.viewmodels.toDepositItemUiState
 import com.irudaru.depcalculator.ui.navigation.NavigationDestination
 import com.irudaru.depcalculator.ui.theme.DepCalculatorTheme
 import kotlinx.coroutines.launch
@@ -107,6 +118,14 @@ fun DepositItemScreen(
                     depositItem = viewModel.depositItemUiState.depositItem
                 )
             },
+            extraDepositOptions = {
+                ExtraDepositOptions(
+                    depositItemUiState = viewModel.depositItemUiState,
+                    onDatePeriodValueChange = viewModel::updateUiState,
+                    onPayOutSelected = viewModel::updateUiState,
+                    onAddToDepositSelected = viewModel::updateUiState
+                )
+            },
             onButtonClick = {
                 coroutineScope.launch {
                     viewModel.updateDepositItem()
@@ -128,6 +147,7 @@ fun DepositItemBody(
     @StringRes buttonText: Int,
     deleteButton: @Composable () -> Unit = {},
     calculationHistory: @Composable () -> Unit = {},
+    extraDepositOptions: @Composable () -> Unit = {},
     onButtonClick: () -> Unit,
     onDepositItemValueChange: (DepositItem) -> Unit,
     modifier: Modifier = Modifier
@@ -141,7 +161,7 @@ fun DepositItemBody(
             modifier = Modifier
                 .padding(horizontal = 8.dp)
         )
-
+        extraDepositOptions.invoke()
         Button(
             onClick = onButtonClick,
             enabled = depositItemUiState.isEntryValid,
@@ -153,6 +173,149 @@ fun DepositItemBody(
         }
         deleteButton.invoke()
         calculationHistory.invoke()
+    }
+}
+
+@Composable
+private fun ExtraDepositOptions(
+    depositItemUiState: DepositItemUiState,
+    onDatePeriodValueChange: (DepositItem) -> Unit = {},
+    onPayOutSelected: (DepositItem) -> Unit = {},
+    onAddToDepositSelected: (DepositItem) -> Unit = {},
+) {
+    DateRangeOptions(
+        depositItemUiState = depositItemUiState,
+        onValueChange = onDatePeriodValueChange
+    )
+    PercentageOptions(
+        depositItemUiState = depositItemUiState,
+        onPayOutSelected = onPayOutSelected,
+        onAddToDepositSelected = onAddToDepositSelected
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun DateRangeOptions(
+    depositItemUiState: DepositItemUiState,
+    onValueChange: (DepositItem) -> Unit,
+) {
+    var isDropdownMenuExpanded by remember { mutableStateOf(false) }
+    var selectedMenuValue by remember { mutableIntStateOf(R.string.year_dropDownMenuItem_depositItemScreen) }
+
+    Column(
+        modifier = Modifier
+            .padding(16.dp),
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Button(
+                // TODO: Make date range selection, currently available only year
+                onClick = { isDropdownMenuExpanded = true },
+                enabled = false,
+                modifier = Modifier
+                    .alpha(0f)
+            ) {
+                Text(text = stringResource(id = R.string.selectPeriod_button_depositItemScreen))
+            }
+            Text(
+                text = stringResource(selectedMenuValue),
+                modifier = Modifier
+                    .padding(horizontal = 8.dp)
+            )
+            TextField(
+                value = depositItemUiState.depositPeriodValue,
+                label = { Text(text = stringResource(id = R.string.depositPeriod_textField_depositItemScreen)) },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_date),
+                        contentDescription = stringResource(id = R.string.depositMoney_textField_depositItemScreen)
+                    )
+                },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.None,
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
+                onValueChange = {
+                    onValueChange(depositItemUiState.depositItem.copy(depositPeriodValue = it))
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp)
+            )
+        }
+
+        DropdownMenu(
+            expanded = isDropdownMenuExpanded,
+            onDismissRequest = { isDropdownMenuExpanded = false }
+        ) {
+            DropdownMenuItem(
+                text = {
+                    Text(text = stringResource(id = R.string.day_dropDownMenuItem_depositItemScreen))
+                },
+                onClick = { selectedMenuValue = R.string.day_dropDownMenuItem_depositItemScreen }
+            )
+            DropdownMenuItem(
+                text = {
+                    Text(text = stringResource(id = R.string.month_dropDownMenuItem_depositItemScreen))
+                },
+                onClick = { selectedMenuValue = R.string.month_dropDownMenuItem_depositItemScreen }
+            )
+            DropdownMenuItem(
+                text = {
+                    Text(text = stringResource(id = R.string.year_dropDownMenuItem_depositItemScreen))
+                },
+                onClick = { selectedMenuValue = R.string.year_dropDownMenuItem_depositItemScreen }
+            )
+        }
+    }
+}
+
+@Composable
+private fun PercentageOptions(
+    depositItemUiState: DepositItemUiState,
+    onPayOutSelected: (DepositItem) -> Unit,
+    onAddToDepositSelected: (DepositItem) -> Unit,
+) {
+    Column(
+        modifier = Modifier
+            .padding(horizontal = 8.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Checkbox(
+                checked = depositItemUiState.isPayOutSelected,
+                onCheckedChange = {
+                    onPayOutSelected(
+                        depositItemUiState.depositItem.copy(
+                            isPayOutSelected = it
+                        )
+                    )
+                }
+            )
+            Text(text = stringResource(id = R.string.payOut_radioButton_depositItemScreen))
+
+            Checkbox(
+                checked = !depositItemUiState.depositItem.isPayOutSelected,
+//                onCheckedChange = {
+//                    depositItemUiState.depositItem.copy(isPayOutSelected = !it)
+//                },
+                onCheckedChange = {
+                    onAddToDepositSelected(
+                        depositItemUiState.depositItem.copy(
+                            isPayOutSelected = !it
+                        )
+                    )
+                }
+            )
+            Text(text = stringResource(id = R.string.addToDeposit_radioButton_depositItemScreen))
+        }
     }
 }
 
@@ -169,7 +332,7 @@ private fun CalculationHistory(
             .fillMaxWidth()
     )
     Text(
-        text = stringResource(id = R.string.calculationHistory_Text_depositItemScreen),
+        text = stringResource(id = R.string.calculationHistory_text_depositItemScreen),
         style = MaterialTheme.typography.titleLarge,
         modifier = Modifier
             .fillMaxWidth()
@@ -194,7 +357,7 @@ private fun CalculationCard(
                 .padding(12.dp)
         ) {
             Text(
-                text = stringResource(id = R.string.profitabilityForYear_Text_depositItemScreen),
+                text = stringResource(id = R.string.profitabilityForYear_text_depositItemScreen),
                 style = MaterialTheme.typography.titleMedium
             )
             Row {
@@ -208,7 +371,7 @@ private fun CalculationCard(
 @Composable
 fun DepositItemContent(
     depositItem: DepositItem,
-    onValueChange: (DepositItem) -> Unit = {},
+    onValueChange: (DepositItem) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
@@ -265,7 +428,7 @@ fun DepositItemContent(
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.None,
                 keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Done
+                imeAction = ImeAction.Next
             ),
             onValueChange = { onValueChange(depositItem.copy(depositPercent = it)) },
             modifier = Modifier
@@ -312,6 +475,17 @@ private fun DepositItemScreenPreview() {
                         7.0,
                         5350.0
                     ).toDepositItem()
+                )
+            },
+            extraDepositOptions = {
+                ExtraDepositOptions(
+                    depositItemUiState = Deposit(
+                        1,
+                        "Valuable",
+                        5000.0,
+                        7.0,
+                        5350.0
+                    ).toDepositItemUiState()
                 )
             },
             onButtonClick = {},
