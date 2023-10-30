@@ -34,6 +34,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -209,7 +210,13 @@ private fun DateRangeOptions(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Button(onClick = { isDropdownMenuExpanded = true }) {
+            Button(
+                // TODO: Make date range selection, currently available only year
+                onClick = { isDropdownMenuExpanded = true },
+                enabled = false,
+                modifier = Modifier
+                    .alpha(0f)
+            ) {
                 Text(text = stringResource(id = R.string.selectPeriod_button_depositItemScreen))
             }
             Text(

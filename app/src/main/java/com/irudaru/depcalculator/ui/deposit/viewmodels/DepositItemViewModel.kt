@@ -108,8 +108,72 @@ class DepositItemViewModel(
 
 }
 
-fun calculateDeposit(amount: String, percent: String): Double {
-    return round((amount.toDouble() * (percent.toDouble() / 100) / 365 * 367) * 100.0) / 100.0
+private fun calculateDeposit(
+    amount: Double,
+    percentage: Double,
+    period: Int,
+    isPayOut: Boolean = true
+): Double {
+    return when(isPayOut) {
+        true -> {
+            calculateDepositWithPayoutAndYearPeriod(
+                amount = amount,
+                percentage = percentage,
+                period = period
+            )
+        }
+        false -> {
+            calculateDepositWithAddToDepositAndYearPeriod(
+                amount = amount,
+                percentage = percentage,
+                period = period
+            )
+        }
+    }
+}
+
+/**
+ * Function to calculate profitability with Pay out option and Year period
+ */
+private fun calculateDepositWithPayoutAndYearPeriod(
+    amount: Double,
+    percentage: Double,
+    period: Int
+): Double {
+    return (amount * (percentage / 100) / 365 * (365 * period)).roundNumberToTwoDigits()
+}
+
+/**
+ * Function to calculate profitability with Add To Deposit option and Year period
+ */
+private fun calculateDepositWithAddToDepositAndYearPeriod(
+    amount: Double,
+    percentage: Double,
+    period: Int
+): Double {
+    val amountMonth: Int = period * 12
+
+    var monthly = (amount * (percentage / 100) / (365 * period) * 30)
+    val resultMonth = mutableListOf<Double>(monthly)
+    var sumMonth = amount + monthly
+    var month = 1
+
+
+    while (month < amountMonth) {
+        monthly = (sumMonth * (percentage / 100) / (365 * period) * 30)
+        sumMonth += monthly
+        resultMonth.add(monthly)
+        month++
+    }
+
+    return (resultMonth.sum() * period).roundNumberToTwoDigits()
+}
+
+/**
+ * Extension function to round number to two digits
+ */
+private fun Double.roundNumberToTwoDigits(): Double {
+    return round((this) * 100.0) / 100.0
 }
 
 /**
@@ -141,10 +205,12 @@ fun DepositItem.toDeposit(): Deposit = Deposit(
     title = title,
     depositAmount = depositAmount.toDoubleOrNull() ?: 0.0,
     depositPercent = depositPercent.toDoubleOrNull() ?: 0.0,
-    lastCalculation = if (!lastCalculation.isNullOrEmpty()) calculateDeposit(
-        amount = depositAmount,
-        percent = depositPercent
-    ) else 0.0,
+    lastCalculation = calculateDeposit(
+        amount = depositAmount.toDoubleOrNull() ?: 0.0,
+        percentage = depositPercent.toDoubleOrNull() ?: 0.0,
+        period = depositPeriodValue.toIntOrNull() ?: 1,
+        isPayOut = isPayOutSelected
+    )
 )
 
 /**
