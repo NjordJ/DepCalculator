@@ -16,8 +16,15 @@
     <string name="title_textField_depositItemScreen">Title</string>
     <string name="depositMoney_textField_depositItemScreen">Amount of money</string>
     <string name="contributionPercent_textField_depositItemScreen">Contribution percent</string>
-    <string name="calculationHistory_Text_depositItemScreen">Calculation history</string>
-    <string name="profitabilityForYear_Text_depositItemScreen">Profitability for one year:</string>
+    <string name="calculationHistory_text_depositItemScreen">Calculation history</string>
+    <string name="profitabilityForYear_text_depositItemScreen">Profitability for one year:</string>
+    <string name="addToDeposit_radioButton_depositItemScreen">Add to deposit</string>
+    <string name="payOut_radioButton_depositItemScreen">Pay out</string>
+    <string name="selectPeriod_button_depositItemScreen">Select period</string>
+    <string name="depositPeriod_textField_depositItemScreen">Deposit period</string>
+    <string name="day_dropDownMenuItem_depositItemScreen">Day</string>
+    <string name="month_dropDownMenuItem_depositItemScreen">Month</string>
+    <string name="year_dropDownMenuItem_depositItemScreen">Year</string>
 
     <!--Deposit Item Entry Screen-->
     <string name="title_appBar_depositItemEntryScreen">New deposit</string>

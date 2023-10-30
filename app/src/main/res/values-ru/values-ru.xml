@@ -16,8 +16,15 @@
     <string name="title_textField_depositItemScreen">Название</string>
     <string name="depositMoney_textField_depositItemScreen">Сумма средств</string>
     <string name="contributionPercent_textField_depositItemScreen">Процентная ставка</string>
-    <string name="calculationHistory_Text_depositItemScreen">История расчетов</string>
-    <string name="profitabilityForYear_Text_depositItemScreen">Доходность за один год:</string>
+    <string name="calculationHistory_text_depositItemScreen">История расчетов</string>
+    <string name="profitabilityForYear_text_depositItemScreen">Доходность за один год:</string>
+    <string name="addToDeposit_radioButton_depositItemScreen">Добавлять к депозиту</string>
+    <string name="payOut_radioButton_depositItemScreen">Выплачивать</string>
+    <string name="selectPeriod_button_depositItemScreen">Выбор срока</string>
+    <string name="depositPeriod_textField_depositItemScreen">Срок вклада</string>
+    <string name="day_dropDownMenuItem_depositItemScreen">День</string>
+    <string name="month_dropDownMenuItem_depositItemScreen">Месяц</string>
+    <string name="year_dropDownMenuItem_depositItemScreen">Год</string>
 
     <!--Deposit Item Entry Screen-->
     <string name="title_appBar_depositItemEntryScreen">Новый депозит</string>
