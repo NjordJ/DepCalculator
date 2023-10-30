@@ -42,12 +42,16 @@ class DepositItemViewModel(
         depositItemUiState =
             DepositItemUiState(
                 depositItem = depositItem,
-                isEntryValid = validateInput(depositItem)
+                isEntryValid = validateInput(depositItem),
+                depositPeriodValue = depositItem.depositPeriodValue,
+                isPayOutSelected = depositItem.isPayOutSelected
             )
     }
 
 
     suspend fun updateDepositItem() {
+        //if (depositItemUiState.isPayOutSelected)
+
         if (validateInput()) {
             depositRepository.updateDeposit(
                 depositItemUiState.depositItem.toDeposit()
@@ -58,6 +62,7 @@ class DepositItemViewModel(
     private fun validateInput(uiState: DepositItem = depositItemUiState.depositItem): Boolean {
         return with(uiState) {
             title.isNotBlank() && depositAmount.isNotBlank() && depositPercent.isNotBlank()
+                    && depositPeriodValue.isNotBlank()
         }
     }
 
@@ -99,6 +104,12 @@ class DepositItemViewModel(
 //    suspend fun updateDepositItem() {
 //        //depositRepository.updateDeposit(depositItemUiState.value.depositItem.toDeposit())
 //    }
+
+
+}
+
+fun calculateDeposit(amount: String, percent: String): Double {
+    return round((amount.toDouble() * (percent.toDouble() / 100) / 365 * 367) * 100.0) / 100.0
 }
 
 /**
@@ -106,7 +117,10 @@ class DepositItemViewModel(
  */
 data class DepositItemUiState(
     val depositItem: DepositItem = DepositItem(),
-    val isEntryValid: Boolean = false
+    val isEntryValid: Boolean = false,
+    val isPayOutSelected: Boolean = true,
+    var depositPeriodValue: String = "1",
+    var depositDateType: Int = 0
 )
 
 data class DepositItem(
@@ -114,7 +128,9 @@ data class DepositItem(
     val title: String = "",
     val depositAmount: String = "",
     val depositPercent: String = "",
-    val lastCalculation: String = ""
+    val lastCalculation: String = "",
+    val depositPeriodValue: String = "",
+    val isPayOutSelected: Boolean = true
 )
 
 /**
@@ -125,7 +141,10 @@ fun DepositItem.toDeposit(): Deposit = Deposit(
     title = title,
     depositAmount = depositAmount.toDoubleOrNull() ?: 0.0,
     depositPercent = depositPercent.toDoubleOrNull() ?: 0.0,
-    lastCalculation = round((depositAmount.toDouble() * (depositPercent.toDouble() / 100) / 365 * 367) * 100.0) / 100.0
+    lastCalculation = if (!lastCalculation.isNullOrEmpty()) calculateDeposit(
+        amount = depositAmount,
+        percent = depositPercent
+    ) else 0.0,
 )
 
 /**

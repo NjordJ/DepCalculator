@@ -24,7 +24,9 @@ class DepositItemEntryViewModel(
         depositItemUiState =
             DepositItemUiState(
                 depositItem = depositItem,
-                isEntryValid = validateInput(depositItem)
+                isEntryValid = validateInput(depositItem),
+                depositPeriodValue = depositItem.depositPeriodValue,
+                isPayOutSelected = depositItem.isPayOutSelected
             )
     }
 
